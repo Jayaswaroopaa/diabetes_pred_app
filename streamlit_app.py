@@ -1,19 +1,15 @@
 import streamlit as st
 import numpy as np
 import pickle
-from sklearn.preprocessing import StandardScaler
 
 # Load the trained model
-model_path = "classifier.pkl"
-scaler_path = "scaler.pkl"  # Ensure you save the scaler during training
+model_path = "diabetes_model.pkl"
 
 try:
     with open(model_path, "rb") as f:
         model = pickle.load(f)
-    with open(scaler_path, "rb") as f:
-        scaler = pickle.load(f)  # Load the same scaler used in training
 except FileNotFoundError:
-    st.error("⚠️ Model or scaler file not found! Please upload them.")
+    st.error("⚠️ Model file 'diabetes_model.pkl' not found! Please upload it to the same directory as this script.")
     st.stop()
 
 # Streamlit UI
@@ -33,12 +29,9 @@ age = st.number_input("Age", min_value=10, max_value=100, value=30)
 # Convert user inputs to numpy array
 user_input = np.array([[pregnancies, glucose, blood_pressure, skin_thickness, insulin, bmi, dpf, age]])
 
-# Scale the input to match model training data
-user_input_scaled = scaler.transform(user_input)
-
 # Prediction
 if st.button("🔍 Predict"):
-    prediction = model.predict(user_input_scaled)[0]
+    prediction = model.predict(user_input)[0]
     
     if prediction == 1:
         st.error("⚠️ High risk of Diabetes! Consult a doctor.")
