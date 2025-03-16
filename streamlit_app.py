@@ -1,12 +1,10 @@
 import streamlit as st
 import pickle
 import numpy as np
-from sklearn.preprocessing import StandardScaler
 
 # Load the trained model
 try:
     model = pickle.load(open("classifier.pkl", "rb"))
-    st.success("✅ Model loaded successfully!")
 except FileNotFoundError:
     st.error("❌ Model file not found. Please check the file path.")
     st.stop()
@@ -24,24 +22,21 @@ bmi = st.number_input("BMI", min_value=0.0, max_value=100.0, step=0.1)
 diabetes_pedigree = st.number_input("Diabetes Pedigree Function", min_value=0.0, max_value=2.5, step=0.01)
 age = st.number_input("Age", min_value=0, max_value=120, step=1)
 
-# Combine user input into a NumPy array
-features = np.array([[pregnancies, glucose, blood_pressure, skin_thickness, insulin, bmi, diabetes_pedigree, age]])
+# Predict button
+if st.button("Predict"):
+    # Combine user input into an array
+    features = np.array([[pregnancies, glucose, blood_pressure, skin_thickness, insulin, bmi, diabetes_pedigree, age]])
 
-# Manually apply Standard Scaling (assuming mean & std from training)
-mean_values = np.array([3.8, 120, 70, 20, 80, 32, 0.47, 33])  # Example means
-std_values = np.array([3.4, 30, 12, 8, 100, 5, 0.33, 12])  # Example standard deviations
+    # Manually apply Standard Scaling (assuming mean & std from training)
+    mean_values = np.array([3.8, 120, 70, 20, 80, 32, 0.47, 33])  # Example means
+    std_values = np.array([3.4, 30, 12, 8, 100, 5, 0.33, 12])  # Example standard deviations
+    input_scaled = (features - mean_values) / std_values
 
-input_scaled = (features - mean_values) / std_values  # Apply standardization
-st.write("🔍 Scaled Features:", input_scaled)
-
-# Perform prediction
-try:
+    # Perform prediction
     prediction = model.predict(input_scaled)
-    st.write("🔍 Model Output:", prediction)
 
+    # Show result
     if prediction[0] == 1:
         st.error("⚠ High Risk of Diabetes! Consult a doctor.")
     else:
         st.success("✅ No Diabetes Risk! Stay healthy.")
-except Exception as e:
-    st.error(f"⚠ Prediction Error: {str(e)}")
