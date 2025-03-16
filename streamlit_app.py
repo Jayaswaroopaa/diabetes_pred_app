@@ -5,7 +5,7 @@ from sklearn.preprocessing import StandardScaler
 
 # Load the trained model
 try:
-    model = pickle.load(open("diabetes_model.pkl", "rb"))
+    model = pickle.load(open("classifier.pkl", "rb"))
     st.success("✅ Model loaded successfully!")
 except FileNotFoundError:
     st.error("❌ Model file not found. Please check the file path.")
