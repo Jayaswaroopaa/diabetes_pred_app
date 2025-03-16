@@ -3,13 +3,13 @@ import numpy as np
 import pickle
 
 # Load the trained model
-model_path = "diabetes_model.pkl"
+model_path = "classifier.pkl"
 
 try:
     with open(model_path, "rb") as f:
         model = pickle.load(f)
 except FileNotFoundError:
-    st.error("⚠️ Model file 'diabetes_model.pkl' not found! Please upload it to the same directory as this script.")
+    st.error("⚠️ Model file 'classifier.pkl' not found! Please upload it to the same directory as this script.")
     st.stop()
 
 # Streamlit UI
